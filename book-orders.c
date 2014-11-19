@@ -82,7 +82,7 @@ int read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		cust->state = state;
 		cust->zip = zip;
 		
-		CDInsert(cdb, cust);
+		//CDInsert(cdb, cust);
 				
 	}
 	return 0;
