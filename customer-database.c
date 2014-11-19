@@ -115,8 +115,8 @@ void PrintDB(CDB cdb) {
 		printf("=== BEGIN CUSTOMER INFO ===\n");
 		printf("### BALANCE ###\n");
 		printf("Customer name: %s\n", cdb->dbarray[cdb->numCust].name);
-		printf("Customer ID number: %s\n", cdb->dbarray[cdb->numCust].id);
-		printf("Remaining credit balance after all purchases (a dollar amount): %f\n", cdb->dbarray[cdb->numCust].balance;
+		printf("Customer ID number: %d\n", cdb->dbarray[cdb->numCust].id);
+		printf("Remaining credit balance after all purchases (a dollar amount): %f\n", cdb->dbarray[cdb->numCust].balance);
 		printf("### SUCCESSFUL ORDERS ###\n");
 		if (cdb->dbarray[cdb->numCust].slist != NULL) {
 			SOrder *curr;
@@ -131,7 +131,7 @@ void PrintDB(CDB cdb) {
 			ROrder *curr;
 			curr = cdb->dbarray[cdb->numCust].rlist;
 			while (curr != NULL) {
-				printf("\"%s\"|%f|%f\n", curr->bname, curr->price, curr->updatedbalance);
+				printf("\"%s\"|%f\n", curr->bname, curr->price);
 				curr = curr->next;
 			}
 		}
