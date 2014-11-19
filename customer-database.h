@@ -23,7 +23,7 @@ typedef struct rorder ROrder;
 
 struct customer {
 	char *name;
-	int id;
+	long id;
 	double balance;
 	char *address;
 	char *state;
