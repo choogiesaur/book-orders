@@ -9,7 +9,7 @@
 struct sorder {
 	char *bname;
 	double price;
-	double updatedcredit;
+	double updatedbalance;
 	struct sorder *next;
 };
 typedef struct sorder SOrder;
@@ -24,7 +24,7 @@ typedef struct rorder ROrder;
 struct customer {
 	char *name;
 	int id;
-	double credit;
+	double balance;
 	char *address;
 	char *state;
 	char *zip;
