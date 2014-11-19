@@ -92,7 +92,7 @@ int CDInsert(CDB cdb, struct customer *cust) {
 	}
 	cdb->dbarray[cdb->numCust].name = cust->name;
 	cdb->dbarray[cdb->numCust].id = cust->id;
-	cdb->dbarray[cdb->numCust].credit = cust->credit;
+	cdb->dbarray[cdb->numCust].balance = cust->balance;
 	cdb->dbarray[cdb->numCust].address = cust->address;
 	cdb->dbarray[cdb->numCust].state = cust->state;
 	cdb->dbarray[cdb->numCust].zip = cust->zip;
@@ -106,5 +106,36 @@ int CDUpdate(CDB cdb, char *bookname, double price) {
 }
 
 void PrintDB(CDB cdb) {
-	
+	if (cdb == NULL) {
+		printf("Error: CDB is NULL.\n");
+		return;
+	}
+	int i;
+	for (i = 0; i < cdb->numCust; i++) {
+		printf("=== BEGIN CUSTOMER INFO ===\n");
+		printf("### BALANCE ###\n");
+		printf("Customer name: %s\n", cdb->dbarray[cdb->numCust].name);
+		printf("Customer ID number: %s\n", cdb->dbarray[cdb->numCust].id);
+		printf("Remaining credit balance after all purchases (a dollar amount): %f\n", cdb->dbarray[cdb->numCust].balance;
+		printf("### SUCCESSFUL ORDERS ###\n");
+		if (cdb->dbarray[cdb->numCust].slist != NULL) {
+			SOrder *curr;
+			curr = cdb->dbarray[cdb->numCust].slist;
+			while (curr != NULL) {
+				printf("\"%s\"|%f|%f\n", curr->bname, curr->price, curr->updatedbalance);
+				curr = curr->next;
+			}
+		}
+		printf("### REJECTED ORDERS ###\n");
+		if (cdb->dbarray[cdb->numCust].rlist != NULL) {
+			ROrder *curr;
+			curr = cdb->dbarray[cdb->numCust].rlist;
+			while (curr != NULL) {
+				printf("\"%s\"|%f|%f\n", curr->bname, curr->price, curr->updatedbalance);
+				curr = curr->next;
+			}
+		}
+		printf("=== END CUSTOMER INFO ===\n");
+		printf("\n\n");
+	}
 }
