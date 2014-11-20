@@ -98,6 +98,7 @@ int CDInsert(CDB cdb, struct customer *cust) {
 	cdb->dbarray[cdb->numCust].zip = cust->zip;
 	cdb->dbarray[cdb->numCust].slist = NULL;
 	cdb->dbarray[cdb->numCust].rlist = NULL;
+	cdb->numCust++;
 	return 1;
 }
 
