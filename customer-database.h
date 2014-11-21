@@ -42,7 +42,7 @@ typedef struct customerdatabase* CDB;
 
 int binarySearch(CDB cdb, long key, int low, int high);
 
-int structcomp(const void *a, const void *b);
+int customercomp(const void *a, const void *b);
 
 int SLDestroy(SOrder *front);
 
