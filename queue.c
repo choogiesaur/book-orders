@@ -16,14 +16,14 @@ Queue QCreate() {
 	return q;
 }
 
-int QDestroy(Queue front) {
-	if (front == NULL) {
+int QDestroy(Queue q) {
+	if (q->front == NULL) {
 		printf("Error: Queue is NULL.\n");
 		return 0;
 	}
-	SOrder *curr;
-	SOrder *temp;
-	curr = front;
+	QNode *curr;
+	QNode *temp;
+	curr = q->front;
 	while (curr != NULL) {
 		temp = curr;
 		curr = curr->next;
@@ -47,9 +47,9 @@ int push(Queue q, QNode *n) {
 	return 1;
 }
 
-QNode pop(Queue q) {
-	QNode r;
-	if (numElem == 0) {
+QNode *pop(Queue q) {
+	QNode *r;
+	if (q->numElem == 0) {
 		return NULL;
 	}
 	r = q->front;
