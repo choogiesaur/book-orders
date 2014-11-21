@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "customer-database.h"
+#include "book-orders.h"
 //MAIN PROG ARGS: ./book-orders <cust database input file> <book order input file> <categories files>
 
 int main(int argc, char **argv){
@@ -14,7 +15,7 @@ int main(int argc, char **argv){
 	printf("categories file: %s\n", categories_file);
 	printf("\n");
 	
-	read_customers(cust_file);
+	read_customers(NULL, cust_file);
 	return 0;
 }
 
@@ -29,7 +30,7 @@ int read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 	
 	char line[300]; //remember MAY NEED TO MODIFY
 	const char delims[2] = "|\n";
-	
+	cdb = CDCreate();
 	while(fgets(line, 300, customer_file) != NULL){ //stored in 'line'
 		printf("line: %s", line);
 		
@@ -82,17 +83,21 @@ int read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		cust->state = state;
 		cust->zip = zip;
 		
-		//CDInsert(cdb, cust);
+		printCustomer(cust);
+		CDInsert(cdb, cust);
 				
 	}
+	//PrintDB(cdb);
 	return 0;
 }
 
 void printCustomer(Customer *dude){
+	printf("---PRINTING CUSTOMER---\n");
 	printf("Customer Name: %s\n", dude->name);
-	printf("Customer ID: %d\n", dude->id);
+	printf("Customer ID: %ld\n", dude->id);
 	printf("Customer Balance: %f\n", dude->balance);
 	printf("Customer Address: %s\n", dude->address);
 	printf("Customer State: %s\n", dude->state);
 	printf("Customer Zip: %s\n", dude->zip);
+	printf("---END PRINTING CUSTOMER---\n");
 }
