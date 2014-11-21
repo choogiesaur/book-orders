@@ -30,3 +30,5 @@ int QDestroy(Queue *front);
 QNode push(Queue *q);
 
 QNode pop(Queue *q);
+
+#endif
