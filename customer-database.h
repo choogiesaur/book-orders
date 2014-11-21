@@ -40,6 +40,10 @@ struct customerdatabase {
 };
 typedef struct customerdatabase* CDB;
 
+int binarySearch(CDB cdb, long key, int low, int high);
+
+int structcomp(const void *a, const void *b);
+
 int SLDestroy(SOrder *front);
 
 int RLDestroy(ROrder *front);
