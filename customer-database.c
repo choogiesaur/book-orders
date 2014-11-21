@@ -8,12 +8,12 @@ int binarySearch(CDB cdb, long key, int low, int high) {
 	}
 	int mid;
     mid = low + ((high - low) / 2);
-    if (cdb->dbarray[mid]->id == key) {
+    if (cdb->dbarray[mid].id == key) {
 		return mid;
-	} else if (cdb->dbarray[mid]->id < key) {
-		return binarySearch(array, key, (mid + 1), high);
-	} else if (cdb->dbarray[mid]->id > key) {
-		return binarySearch(array, key, low, (mid - 1));
+	} else if (cdb->dbarray[mid].id < key) {
+		return binarySearch(cdb, key, (mid + 1), high);
+	} else if (cdb->dbarray[mid].id > key) {
+		return binarySearch(cdb, key, low, (mid - 1));
 	}
 	return -1;
 }
