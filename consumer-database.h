@@ -17,7 +17,7 @@ struct consumer_struct {
 	pthread_mutex_t mutex;
 	pthread_cond_t empty;
 	pthread_cond_t full;
-	struct queue *q;
+	struct queue q;
 };
 typedef struct consumer_struct ConsumerStruct;
 
@@ -28,7 +28,7 @@ struct consumer_struct_array {
 };
 typedef struct consumer_struct_array* CSA;
 
-//int binarySearch(CSA csa, char *key, int low, int high);
+int binarySearch2(CSA csa, char *key, int low, int high);
 
 int consumercomp(const void *a, const void *b);
 
