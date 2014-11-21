@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-int binarySearch(CSA csa, char *key, int low, int high) {
+/*int binarySearch(CSA csa, char *key, int low, int high) {
     if (high < low) {
         return -1;
 	}
@@ -16,11 +16,12 @@ int binarySearch(CSA csa, char *key, int low, int high) {
 		return binarySearch(cdb, key, low, (mid - 1));
 	}
 	return -1;
-}
+}*/
 
+/*
 int consumercomp(const void *a, const void *b) {
-	Customer *tempa = (Customer *)a;
-	Customer *tempb = (Customer *)b;
+	//Customer *tempa = (Customer *)a;
+	//Customer *tempb = (Customer *)b;
 	if (tempa->id - tempb->id > 0) {
 		return 1;
 	}
@@ -30,7 +31,7 @@ int consumercomp(const void *a, const void *b) {
 	else {
 		return 0;
 	}
-}
+}*/
 
 CSA CSACreate() {
 	// Creating and mallocing the CSA to be returned via the pointer csa.
