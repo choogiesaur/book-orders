@@ -15,23 +15,27 @@ int main(int argc, char **argv){
 	printf("categories file: %s\n", categories_file);
 	printf("\n");
 	
-	read_customers(NULL, cust_file);
+	CDB cdb;
+	cdb = CDCreate();
+	cdb = read_customers(cdb, cust_file);
+	PrintDB(cdb);
+	
 	return 0;
 }
 
-int read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr you got in this fxn
+CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr you got in this fxn
 	
 	FILE *customer_file;
 	customer_file = fopen(filename, "r");
 	
 	if (customer_file == NULL){ //obv checking if null like DUH
     		printf("ERR: could not read file %s", filename);
-    		return -1;
+    		return NULL;
 	}
 	
 	char line[300]; //remember MAY NEED TO MODIFY
 	const char delims[2] = "|\n";
-	cdb = CDCreate();
+	//cdb = CDCreate();
 	while(fgets(line, 300, customer_file) != NULL){ //stored in 'line'
 		printf("line: %s", line);
 		
@@ -88,10 +92,23 @@ int read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		CDInsert(cdb, cust);
 				
 	}
-	PrintDB(cdb);
-	return 0;
+	void *vcdb = (void *) cdb->dbarray; //vdb is the actual customer array, casted to a void (doesnt have the cdb wrapper)
+	qsort(vcdb,cdb->numCust,sizeof(Customer),structcomp);
+	cdb->dbarray = (Customer *) vcdb;
+	return cdb;
 }
 
+int read_categories(char *filename){ //cdb is the customer database ptr you got in this fxn
+
+	FILE *categories_file;
+	categories_file = fopen(filename, "r");
+	
+	if (categories_file == NULL){ //obv checking if null like DUH
+    		printf("ERR: could not read file %s", filename);
+    		return NULL;
+	}
+
+}
 /*------------HELPER FUNCTIONS-------------*/
 
 void printCustomer(Customer *dude){
