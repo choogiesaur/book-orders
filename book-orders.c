@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "customer-database.h"
+#include "consumer-database.h"
 #include "book-orders.h"
 //MAIN PROG ARGS: ./book-orders <cust database input file> <book order input file> <categories files>
 
@@ -19,6 +20,8 @@ int main(int argc, char **argv){
 	cdb = CDCreate();
 	cdb = read_customers(cdb, cust_file);
 	PrintDB(cdb);
+	
+	read_categories(categories_file);
 	
 	return 0;
 }
@@ -98,15 +101,29 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 	return cdb;
 }
 
-int read_categories(char *filename){ //cdb is the customer database ptr you got in this fxn
+int read_categories(char *filename){ //reads in the categories textfile
 
 	FILE *categories_file;
 	categories_file = fopen(filename, "r");
 	
 	if (categories_file == NULL){ //obv checking if null like DUH
-    		printf("ERR: could not read file %s", filename);
-    		return NULL;
+    		printf("ERR: could not read file %s\n", filename);
+    		return -1;
 	}
+	
+	char line[200]; //remember MAY NEED TO MODIFY
+	const char delims[2] = "\n ";
+	
+	while(fgets(line, 200, categories_file) != NULL){ //stored in 'line'
+		printf("line: %s", line);
+		char *token;
+		token = strtok(line, delims); //name
+		char *category = (char *) malloc(strlen(token) + 1);
+		strcpy(category, token);
+		category[strlen(token)] = '\0';
+		printf("	category: '%s'\n", category);
+	}
+	return 0;
 
 }
 /*------------HELPER FUNCTIONS-------------*/
