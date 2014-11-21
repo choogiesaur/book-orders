@@ -5,8 +5,6 @@
  */
 
 #include <stdlib.h>
-#include <errno.h>
-#include <malloc.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <string.h>
