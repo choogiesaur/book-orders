@@ -1,7 +1,12 @@
 #include "consumer-database.h"
 #include "queue.h"
-#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <malloc.h>
+#include <pthread.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 int binarySearch2(CSA csa, char *key, int low, int high) {
     if (high < low) {
