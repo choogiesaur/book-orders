@@ -26,9 +26,9 @@ struct consumer_struct_array {
 	int size;
 	ConsumerStruct *consumerdata;
 };
-typedef struct consumer_struct_array CSA;
+typedef struct consumer_struct_array* CSA;
 
-int binarySearch(CSA csa, char *key, int low, int high);
+//int binarySearch(CSA csa, char *key, int low, int high);
 
 int consumercomp(const void *a, const void *b);
 
