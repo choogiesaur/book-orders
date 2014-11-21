@@ -74,7 +74,7 @@ int CDDestroy(CDB cdb) {
 	return 1;
 }
 
-int CDInsert(CDB cdb, Customer *cust) {
+int CDInsert(CDB cdb, struct customer *cust) {
 	if (cdb == NULL) {
 		printf("Error: Customer DataBase is NULL.\n");
 		return 0;
@@ -99,6 +99,8 @@ int CDInsert(CDB cdb, Customer *cust) {
 	cdb->dbarray[cdb->numCust].zip = cust->zip;
 	cdb->dbarray[cdb->numCust].slist = NULL;
 	cdb->dbarray[cdb->numCust].rlist = NULL;
+	//struct customer *person = &(cdb->dbarray[cdb->numCust]);
+	//printCustomer(person);
 	cdb->numCust++;
 	return 1;
 }
