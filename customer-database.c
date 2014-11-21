@@ -75,7 +75,7 @@ int CDDestroy(CDB cdb) {
 
 int CDInsert(CDB cdb, struct customer *cust) {
 	if (cdb == NULL) {
-		printf("Error: CDB is NULL.\n");
+		printf("Error: Customer DataBase is NULL.\n");
 		return 0;
 	}
 	if (cust == NULL) {
@@ -85,7 +85,7 @@ int CDInsert(CDB cdb, struct customer *cust) {
 	if (cdb->numCust == cdb->dbSize) {
 		cdb->dbarray = realloc(cdb->dbarray, 2 * cdb->dbSize);
 		if (cdb->dbarray == NULL) {
-			printf("Error: Realloc of DB is NULL.\n");
+			printf("Error: Realloc of DataBase is NULL.\n");
 			return 0;
 		}
 		cdb->dbSize = 2 * cdb->dbSize;
