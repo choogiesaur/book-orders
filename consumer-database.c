@@ -17,9 +17,9 @@ int binarySearch2(CSA csa, char *key, int low, int high) {
     if (csa->consumerdata[mid].category == key) {
 		return mid;
 	} else if (strcmp(csa->consumerdata[mid].category, key) < 0) {
-		return binarySearch(csa, key, (mid + 1), high);
+		return binarySearch2(csa, key, (mid + 1), high);
 	} else if (strcmp(csa->consumerdata[mid].category, key) > 0) {
-		return binarySearch(csa, key, low, (mid - 1));
+		return binarySearch2(csa, key, low, (mid - 1));
 	}
 	return -1;
 }
@@ -85,9 +85,15 @@ int CSAInsert(CSA csa, char *category) {
 	}
 	csa->consumerdata[csa->numCons].category = category;
 	csa->consumerdata[csa->numCons].q = QCreate();
-	csa->consumerdata[csa->numCons].mutex = pthread_mutex_init(&(csa->consumerdata[csa->numCons].mutex), 0);
-	csa->consumerdata[csa->numCons].empty = pthread_cond_init(&(csa->consumerdata[csa->numCons].empty), 0);
-	csa->consumerdata[csa->numCons].full = pthread_cond_init(&(csa->consumerdata[csa->numCons].full), 0);
+	if (pthread_mutex_init(&(csa->consumerdata[csa->numCons].mutex), 0) != 0) {
+		printf("Error: Cannot initialize mutex.\n");
+	}
+	if (pthread_cond_init(&(csa->consumerdata[csa->numCons].notempty), 0) != 0) {
+		printf("Error: Cannot initialize conditional variable notempty.\n");
+	}
+	if (pthread_cond_init(&(csa->consumerdata[csa->numCons].full), 0) != 0) {
+		printf("Error: Cannot initialize conditional variable full.\n");
+	}
 	csa->numCons++;
 	return 1;
 }
