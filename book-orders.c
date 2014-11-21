@@ -4,6 +4,7 @@
 #include "customer-database.h"
 #include "consumer-database.h"
 #include "book-orders.h"
+#include "queue.h"
 //MAIN PROG ARGS: ./book-orders <cust database input file> <book order input file> <categories files>
 
 int main(int argc, char **argv){
@@ -21,7 +22,10 @@ int main(int argc, char **argv){
 	cdb = read_customers(cdb, cust_file);
 	PrintDB(cdb);
 	
-	read_categories(categories_file);
+	CSA csa = CSACreate();
+	//csa = read_categories(csa, categories_file);
+	
+	//read_categories(categories_file);
 	
 	return 0;
 }
@@ -96,25 +100,28 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 				
 	}
 	void *vcdb = (void *) cdb->dbarray; //vdb is the actual customer array, casted to a void (doesnt have the cdb wrapper)
-	qsort(vcdb,cdb->numCust,sizeof(Customer),structcomp);
+	qsort(vcdb,cdb->numCust,sizeof(Customer),customercomp);
 	cdb->dbarray = (Customer *) vcdb;
 	return cdb;
 }
 
-int read_categories(char *filename){ //reads in the categories textfile
+CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 
 	FILE *categories_file;
 	categories_file = fopen(filename, "r");
 	
 	if (categories_file == NULL){ //obv checking if null like DUH
     		printf("ERR: could not read file %s\n", filename);
-    		return -1;
+    		return NULL;
 	}
 	
 	char line[200]; //remember MAY NEED TO MODIFY
 	const char delims[2] = "\n ";
 	
 	while(fgets(line, 200, categories_file) != NULL){ //stored in 'line'
+	
+		//ConsumerStruct *consumer =(ConsumerStruct *) malloc(sizeof(ConsumerStruct));
+		
 		printf("line: %s", line);
 		char *token;
 		token = strtok(line, delims); //name
@@ -122,8 +129,11 @@ int read_categories(char *filename){ //reads in the categories textfile
 		strcpy(category, token);
 		category[strlen(token)] = '\0';
 		printf("	category: '%s'\n", category);
+		
+		//consumer->category = category;
+		CSAInsert(csa, category);
 	}
-	return 0;
+	return csa;
 
 }
 /*------------HELPER FUNCTIONS-------------*/
