@@ -18,7 +18,7 @@ int binarySearch(CDB cdb, long key, int low, int high) {
 	return -1;
 }
 
-int structcomp(const void *a, const void *b) {
+int customercomp(const void *a, const void *b) {
 	Customer *tempa = (Customer *)a;
 	Customer *tempb = (Customer *)b;
 	if (tempa->id - tempb->id > 0) {
@@ -67,12 +67,12 @@ int RLDestroy(ROrder *front){
 }
 
 CDB CDCreate() {
-	// Creating and mallocing the cdb to be returned via the pointer sl.
+	// Creating and mallocing the CDB to be returned via the pointer cdb.
 	CDB cdb;
 	cdb = (struct customerdatabase *)malloc(sizeof(struct customerdatabase));
 	// If malloc fails print an error statement and return NULL.
 	if (cdb == NULL) {
-		//printf("Error: Out of memory.\n");
+		printf("Error: Out of memory.\n");
 		return NULL;
 	}
 	cdb->dbarray = (Customer *)malloc(10 * sizeof(Customer));
@@ -133,6 +133,7 @@ int CDInsert(CDB cdb, Customer *cust) {
 }
 
 int CDUpdate(CDB cdb, char *bookname, double price) {
+	
 	return 1;
 }
 
