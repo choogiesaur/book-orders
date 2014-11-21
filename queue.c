@@ -16,7 +16,7 @@ Queue QCreate() {
 	return q;
 }
 
-int QDestroy(Queue *front) {
+int QDestroy(Queue front) {
 	if (front == NULL) {
 		printf("Error: Queue is NULL.\n");
 		return 0;
@@ -32,7 +32,7 @@ int QDestroy(Queue *front) {
 	return 1;
 }
 
-int push(Queue *q, QNode *n) {
+int push(Queue q, QNode *n) {
 	if (q->front == NULL) {
 		q->front = n;
 		q->back = n;
@@ -47,7 +47,7 @@ int push(Queue *q, QNode *n) {
 	return 1;
 }
 
-QNode pop(Queue *q) {
+QNode pop(Queue q) {
 	QNode r;
 	if (numElem == 0) {
 		return NULL;
