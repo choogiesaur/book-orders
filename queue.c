@@ -4,7 +4,7 @@
 
 Queue QCreate() {
 	Queue q;
-	q = (Queue *)malloc(sizeof(Queue));
+	q = (struct queue *)malloc(sizeof(struct queue));
 	if (q == NULL) {
 		printf("Error: Out of memory.\n");
 		return NULL;
