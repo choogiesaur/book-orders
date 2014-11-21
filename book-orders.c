@@ -20,10 +20,11 @@ int main(int argc, char **argv){
 }
 
 int read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr you got in this fxn
-	FILE *customer_file;
-	customer_file = fopen("/ilab/users/fs263/Desktop/cs214/pa5/database.txt", "r");
 	
-	if (customer_file == NULL){
+	FILE *customer_file;
+	customer_file = fopen(filename, "r");
+	
+	if (customer_file == NULL){ //obv checking if null like DUH
     		printf("ERR: could not read file %s", filename);
     		return -1;
 	}
@@ -83,13 +84,15 @@ int read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		cust->state = state;
 		cust->zip = zip;
 		
-		printCustomer(cust);
+		//printCustomer(cust);
 		CDInsert(cdb, cust);
 				
 	}
-	//PrintDB(cdb);
+	PrintDB(cdb);
 	return 0;
 }
+
+/*------------HELPER FUNCTIONS-------------*/
 
 void printCustomer(Customer *dude){
 	printf("---PRINTING CUSTOMER---\n");
