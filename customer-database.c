@@ -85,8 +85,8 @@ int CDInsert(CDB cdb, struct customer *cust) {
 	if (cdb->numCust == cdb->dbSize) {
 		cdb->dbarray = realloc(cdb->dbarray, 2 * cdb->dbSize);
 		if (cdb->dbarray == NULL) {
-			printf("Error: DB is NULL.\n");
-		return 0;
+			printf("Error: Realloc of DB is NULL.\n");
+			return 0;
 		}
 		cdb->dbSize = 2 * cdb->dbSize;
 	}
