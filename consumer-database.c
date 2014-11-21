@@ -1,4 +1,5 @@
 #include "consumer-database.h"
+#include "queue.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -35,7 +36,7 @@ int consumercomp(const void *a, const void *b) {
 CSA CSACreate() {
 	// Creating and mallocing the CSA to be returned via the pointer csa.
 	CSA csa;
-	csa = (CSA *)malloc(sizeof(CSA));
+	csa = (CSA)malloc(sizeof(CSA));
 	// If malloc fails print an error statement and return NULL.
 	if (csa == NULL) {
 		printf("Error: Out of memory.\n");
