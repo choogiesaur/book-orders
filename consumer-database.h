@@ -15,9 +15,9 @@
 struct consumer_struct {
 	char *category;
 	pthread_mutex_t mutex;
-	pthread_cond_t empty;
+	pthread_cond_t notempty;
 	pthread_cond_t full;
-	struct queue q;
+	struct queue *q;
 };
 typedef struct consumer_struct ConsumerStruct;
 
