@@ -2,36 +2,35 @@
 #include <string.h>
 #include <stdio.h>
 
-/*int binarySearch(CSA csa, char *key, int low, int high) {
+int binarySearch2(CSA csa, char *key, int low, int high) {
     if (high < low) {
         return -1;
 	}
 	int mid;
     mid = low + ((high - low) / 2);
-    if (cdb->dbarray[mid].id == key) {
+    if (csa->consumerdata[mid].category == key) {
 		return mid;
-	} else if (cdb->dbarray[mid].id < key) {
-		return binarySearch(cdb, key, (mid + 1), high);
-	} else if (cdb->dbarray[mid].id > key) {
-		return binarySearch(cdb, key, low, (mid - 1));
+	} else if (strcmp(csa->consumerdata[mid].category, key) < 0) {
+		return binarySearch(csa, key, (mid + 1), high);
+	} else if (strcmp(csa->consumerdata[mid].category, key) > 0) {
+		return binarySearch(csa, key, low, (mid - 1));
 	}
 	return -1;
-}*/
+}
 
-/*
 int consumercomp(const void *a, const void *b) {
-	//Customer *tempa = (Customer *)a;
-	//Customer *tempb = (Customer *)b;
-	if (tempa->id - tempb->id > 0) {
+	ConsumerStruct *tempa = (ConsumerStruct *)a;
+	ConsumerStruct *tempb = (ConsumerStruct *)b;
+	if (strcmp(tempa->category, tempb->category) > 0) {
 		return 1;
 	}
-	else if (tempa->id - tempb->id < 0) {
+	else if (strcmp(tempa->category, tempb->category) < 0) {
 		return -1;
 	}
 	else {
 		return 0;
 	}
-}*/
+}
 
 CSA CSACreate() {
 	// Creating and mallocing the CSA to be returned via the pointer csa.
