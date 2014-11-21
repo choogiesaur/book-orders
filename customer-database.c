@@ -1,4 +1,5 @@
 #include "customer-database.h"
+#include "book-orders.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -73,7 +74,7 @@ int CDDestroy(CDB cdb) {
 	return 1;
 }
 
-int CDInsert(CDB cdb, struct customer *cust) {
+int CDInsert(CDB cdb, Customer *cust) {
 	if (cdb == NULL) {
 		printf("Error: Customer DataBase is NULL.\n");
 		return 0;
@@ -115,22 +116,22 @@ void PrintDB(CDB cdb) {
 	for (i = 0; i < cdb->numCust; i++) {
 		printf("=== BEGIN CUSTOMER INFO ===\n");
 		printf("### BALANCE ###\n");
-		printf("Customer name: %s\n", cdb->dbarray[cdb->numCust].name);
-		printf("Customer ID number: %ld\n", cdb->dbarray[cdb->numCust].id);
-		printf("Remaining credit balance after all purchases (a dollar amount): %f\n", cdb->dbarray[cdb->numCust].balance);
+		printf("Customer name: %s\n", cdb->dbarray[i].name);
+		printf("Customer ID number: %ld\n", cdb->dbarray[i].id);
+		printf("Remaining credit balance after all purchases (a dollar amount): %f\n", cdb->dbarray[i].balance);
 		printf("### SUCCESSFUL ORDERS ###\n");
-		if (cdb->dbarray[cdb->numCust].slist != NULL) {
+		if (cdb->dbarray[i].slist != NULL) {
 			SOrder *curr;
-			curr = cdb->dbarray[cdb->numCust].slist;
+			curr = cdb->dbarray[i].slist;
 			while (curr != NULL) {
 				printf("\"%s\"|%f|%f\n", curr->bname, curr->price, curr->updatedbalance);
 				curr = curr->next;
 			}
 		}
 		printf("### REJECTED ORDERS ###\n");
-		if (cdb->dbarray[cdb->numCust].rlist != NULL) {
+		if (cdb->dbarray[i].rlist != NULL) {
 			ROrder *curr;
-			curr = cdb->dbarray[cdb->numCust].rlist;
+			curr = cdb->dbarray[i].rlist;
 			while (curr != NULL) {
 				printf("\"%s\"|%f\n", curr->bname, curr->price);
 				curr = curr->next;
