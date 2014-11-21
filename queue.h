@@ -25,10 +25,10 @@ typedef struct queue* Queue;
 
 Queue QCreate();
 
-int QDestroy(Queue *front);
+int QDestroy(Queue front);
 
-QNode push(Queue *q);
+QNode push(Queue q);
 
-QNode pop(Queue *q);
+QNode pop(Queue q);
 
 #endif
