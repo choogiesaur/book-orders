@@ -36,6 +36,7 @@ struct customer {
 typedef struct customer Customer;
 
 struct customerdatabase {
+	double revenue;
 	int numCust;
 	int dbSize;
 	struct customer *dbarray;
