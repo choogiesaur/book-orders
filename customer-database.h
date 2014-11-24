@@ -29,7 +29,9 @@ struct customer {
 	char *state;
 	char *zip;
 	struct sorder *slist;
+	struct sorder *slistback;
 	struct rorder *rlist;
+	struct rorder *rlistback;
 };
 typedef struct customer Customer;
 
