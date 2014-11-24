@@ -132,8 +132,52 @@ int CDInsert(CDB cdb, Customer *cust) {
 	return 1;
 }
 
-int CDUpdate(CDB cdb, char *bookname, double price) {
-	
+int CDUpdate(CDB cdb, QNode order) {
+	int index;
+	Customer cust;
+	index = binarySearch(cdb, order->id, 0, cdb->numCust - 1);
+	if (index == -1) {
+		printf("Error: customer not found in CDUpdate.");
+		return 0;
+	}
+	cust = cdb->dbarray[index];
+	if (order->price > cdb->dbarray[index].balance) {
+		ROrder *rejected;
+		char *bookname;
+		rejected = (ROrder *)malloc(sizeof(ROrder));
+		bookname = (char *)malloc(sizeof(order->bname) + 1);
+		strcpy(bookname, order->bname);
+		rejected->bname = bookname;
+		rejected->price = order->price;
+		rejected->next = NULL;
+		if (cdb->dbarray[index].rlist == NULL) {
+			cdb->dbarray[index].rlist = rejected;
+			cdb->dbarray[index].rlistback = rejected;
+		} 
+		else {
+			cdb->dbarray[index].rlistback->next = rejected;
+			cdb->dbarray[index].rlistback = rejected;
+		}
+	}
+	else {
+		SOrder *accepted;
+		char *bookname;
+		accepted = (SOrder *)malloc(sizeof(SOrder));
+		bookname = (char *)malloc(sizeof(order->bname) + 1);
+		strcpy(bookname, order->bname);
+		accepted->bname = bookname;
+		accepted->price = order->price;
+		accepted->next = NULL;
+		if (cdb->dbarray[index].slist == NULL) {
+			cdb->dbarray[index].slist = accepted;
+			cdb->dbarray[index].slistback = accepted;
+		} 
+		else {
+			cdb->dbarray[index].slistback->next = accepted;
+			cdb->dbarray[index].slistback = accepted;
+		}
+		cdb->revenue += order->price;
+	}
 	return 1;
 }
 
