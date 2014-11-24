@@ -167,6 +167,7 @@ int CDUpdate(CDB cdb, QNode order) {
 		strcpy(bookname, order->bname);
 		accepted->bname = bookname;
 		accepted->price = order->price;
+		accepted->updatedbalance = cdb->dbarray[index].balance - price;
 		accepted->next = NULL;
 		if (cdb->dbarray[index].slist == NULL) {
 			cdb->dbarray[index].slist = accepted;
@@ -176,6 +177,7 @@ int CDUpdate(CDB cdb, QNode order) {
 			cdb->dbarray[index].slistback->next = accepted;
 			cdb->dbarray[index].slistback = accepted;
 		}
+		cdb->dbarray[index].balance = accepted->updatedbalance;
 		cdb->revenue += order->price;
 	}
 	return 1;
