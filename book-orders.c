@@ -9,23 +9,23 @@
 
 int main(int argc, char **argv){
 	char *cust_file = argv[1];
-	char *order_file = argv[2];
+	char *orders_file = argv[2];
 	char *categories_file = argv[3];
 	
 	printf("customer file: %s\n", cust_file);
-	printf("order file: %s\n", order_file);
+	printf("order file: %s\n", orders_file);
 	printf("categories file: %s\n", categories_file);
 	printf("\n");
 	
 	CDB cdb;
 	cdb = CDCreate();
-	cdb = read_customers(cdb, cust_file);
+	cdb = read_customers(cdb, cust_file); //first fxn
 	PrintDB(cdb);
 	
 	CSA csa = CSACreate();
-	//csa = read_categories(csa, categories_file);
+	csa = read_categories(csa, categories_file); //2nd fxn
 	
-	//read_categories(categories_file);
+	read_orders(orders_file); //3rd fxn
 	
 	return 0;
 }
@@ -134,6 +134,53 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 		CSAInsert(csa, category);
 	}
 	return csa;
+
+}
+
+int read_orders(char *filename){
+	printf("--------ORDERS--------\n");
+	FILE *orders_file;
+	orders_file = fopen(filename, "r");
+	
+	if (orders_file == NULL){
+    		printf("ERR: could not read orders file %s\n", filename);
+    		return -1;
+	}
+	
+	char line[300];
+	const char delims[2] = "|\n";
+	
+	while(fgets(line, 300, orders_file) != NULL){ //each line is an order
+	
+		printf("line: %s", line);
+		char *token;
+
+		char *title;	//book title
+		double cost;	//book cost
+		long id;	//customer id
+		char *category;	//book category
+		
+		token = strtok(line, delims); //name
+		title =(char *) malloc(strlen(token) + 1);
+		strcpy(title, token);
+		title[strlen(token)] = '\0';
+		printf("	title: %s\n", title);
+
+		token = strtok(NULL, delims); //balance
+		cost = strtod(token, NULL);
+		printf("	cost: %f\n", cost);
+
+		token = strtok(NULL, delims); //id
+		id = strtol(token, NULL, 10);
+		printf("	customer id: %ld\n", id);
+
+		token = strtok(line, delims); //name
+		category =(char *) malloc(strlen(token) + 1);
+		strcpy(category, token);
+		category[strlen(token)] = '\0';
+		printf("	category: %s\n", category);
+	}
+	return 0;
 
 }
 /*------------HELPER FUNCTIONS-------------*/
