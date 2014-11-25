@@ -12,9 +12,9 @@ CDB read_customers(CDB cdb, char *filename);
 
 CSA read_categories(CSA csa, char *filename);
 
-void *producer(char *filename);
+void *producer(void *fn);
 
-void *consumer(ConsumerStruct *consumerstruct);
+void *consumer(void *cs);
 
 void printCustomer(Customer *dude);
 
