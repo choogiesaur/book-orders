@@ -5,6 +5,10 @@
  */
 
 #include <stdlib.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 struct sorder {
 	char *bname;
@@ -22,6 +26,7 @@ struct rorder {
 typedef struct rorder ROrder;
 
 struct customer {
+	pthread_mutex_t queue_mutex;
 	char *name;
 	long id;
 	double balance;
@@ -36,6 +41,7 @@ struct customer {
 typedef struct customer Customer;
 
 struct customerdatabase {
+	pthread_mutex_t revenuemutex;
 	double revenue;
 	int numCust;
 	int dbSize;
