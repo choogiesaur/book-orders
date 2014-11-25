@@ -136,10 +136,10 @@ int CDInsert(CDB cdb, Customer *cust) {
 	return 1;
 }
 
-int CDUpdate(CDB cdb, QNode *order) {
+int CDUpdate(CDB cdb, QNode *order, int indx) {
 	int index;
 	Customer *cust;
-	index = binarySearch(cdb, order->id, 0, cdb->numCust - 1);
+	index = indx;
 	if (index == -1) {
 		printf("Error: customer not found in CDUpdate.");
 		return 0;
