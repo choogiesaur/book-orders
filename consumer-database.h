@@ -13,13 +13,14 @@
 struct consumer_struct {
 	char *category;
 	pthread_mutex_t mutex;
-	pthread_cond_t notempty;
-	pthread_cond_t full;
+	pthread_cond_t dataAvailable;
+	pthread_cond_t spaceAvailable;
 	struct queue *q;
 };
 typedef struct consumer_struct ConsumerStruct;
 
 struct consumer_struct_array {
+	pthread_cond_t done;
 	int numCons;
 	int size;
 	ConsumerStruct *consumerdata;
