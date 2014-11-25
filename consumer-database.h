@@ -37,4 +37,6 @@ int CSADestroy(CSA csa);
 
 int CSAInsert(CSA csa, char *category);
 
+void PrintCSA(CSA csa);
+
 #endif
