@@ -129,7 +129,7 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 	}
 	
 	char line[200]; //remember MAY NEED TO MODIFY
-	const char delims[2] = "\n ";
+	const char delims[3] = "\n ";
 	
 	while(fgets(line, 200, categories_file) != NULL){ //stored in 'line'
 	
@@ -166,7 +166,7 @@ void *producer(void *fn){
 	}
 	
 	char line[300];
-	const char delims[2] = "|\n";
+	const char delims[3] = "|\n";
 	
 	pthread_detach(pthread_self());
 	while(fgets(line, 300, orders_file) != NULL){ //each line is an order
