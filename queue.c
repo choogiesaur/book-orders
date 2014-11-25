@@ -48,6 +48,7 @@ int push(Queue q, QNode *n) {
 	q->back = n;
 	n->next = NULL;
 	q->numElem++;
+	printf("Pushing order %s|%f|%d|%s\n", n->bname, n->price, n->id, n->category);
 	return 1;
 }
 
@@ -59,5 +60,6 @@ QNode *pop(Queue q) {
 	r = q->front;
 	q->front = q->front->next;
 	q->numElem--;
+	printf("Pushing order %s|%f|%d|%s\n", r->bname, r->price, r->id, r->category);
 	return r;
 }
