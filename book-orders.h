@@ -4,11 +4,17 @@
  * book-orders.h
  */
 
+CSA csa;
+
+CDB cdb;
+
 CDB read_customers(CDB cdb, char *filename);
 
 CSA read_categories(CSA csa, char *filename);
 
-void producer(CSA csa, char *filename);
+void *producer(char *filename);
+
+void *consumer(ConsumerStruct *consumerstruct);
 
 void printCustomer(Customer *dude);
 
