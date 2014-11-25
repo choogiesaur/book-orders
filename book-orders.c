@@ -250,6 +250,7 @@ void *consumer(ConsumerStruct *consumerstruct) {
 		if (index >= 0) {
 			pthread_mutex_lock(&cdb->dbarray[index].queue_mutex);
 			CDUpdate(cdb, order);
+			pthread_mutex_unlock(&cdb->dbarray[index].queue_mutex);
 		}
 		free(order->bname);
 		free(order->category);
