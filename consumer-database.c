@@ -98,3 +98,17 @@ int CSAInsert(CSA csa, char *category) {
 	csa->numCons++;
 	return 1;
 }
+
+void PrintCSA(CSA csa) {
+	if (csa == NULL) {
+		printf("Error: CSA is NULL.\n");
+		return;
+	}
+	int i;
+	for (i = 0; i < csa->numCons; i++) {
+		printf("=== BEGIN CONSUMER INFO ===\n");
+		printf("Consumer category: %s\n", csa->consumerdata[i].category);
+		printf("=== END CONSUMER INFO ===\n");
+		printf("\n\n");
+	}
+}
