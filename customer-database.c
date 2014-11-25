@@ -135,7 +135,7 @@ int CDInsert(CDB cdb, Customer *cust) {
 	return 1;
 }
 
-int CDUpdate(CDB cdb, QNode order) {
+int CDUpdate(CDB cdb, QNode *order) {
 	int index;
 	Customer *cust;
 	index = binarySearch(cdb, order->id, 0, cdb->numCust - 1);
@@ -143,7 +143,7 @@ int CDUpdate(CDB cdb, QNode order) {
 		printf("Error: customer not found in CDUpdate.");
 		return 0;
 	}
-	cust = cdb->dbarray[index];
+	cust = &(cdb->dbarray[index]);
 	if (order->price > cdb->dbarray[index].balance) {
 		ROrder *rejected;
 		char *bookname;
@@ -170,7 +170,7 @@ int CDUpdate(CDB cdb, QNode order) {
 		strcpy(bookname, order->bname);
 		accepted->bname = bookname;
 		accepted->price = order->price;
-		accepted->updatedbalance = cdb->dbarray[index].balance - price;
+		accepted->updatedbalance = cdb->dbarray[index].balance - order->price;
 		accepted->next = NULL;
 		if (cdb->dbarray[index].slist == NULL) {
 			cdb->dbarray[index].slist = accepted;
@@ -193,8 +193,9 @@ void PrintDB(CDB cdb) {
 		printf("Error: CDB is NULL.\n");
 		return;
 	}
+	printf("=== TOTAL REVENUE GENERATED: %f ===\n\n", cdb->revenue);
 	int i;
-	for (i = 0; i < cdb->numCust; i++) {
+	for (i = 0; i < cdb->numCust; i++) {		
 		printf("=== BEGIN CUSTOMER INFO ===\n");
 		printf("### BALANCE ###\n");
 		printf("Customer name: %s\n", cdb->dbarray[i].name);
