@@ -120,6 +120,9 @@ int CDInsert(CDB cdb, Customer *cust) {
 		}
 		cdb->dbSize = 2 * cdb->dbSize;
 	}
+	if (pthread_mutex_init(&(cdb->dbarray[cdb->numCust].queue_mutex), 0) != 0) {
+		printf("Error: Cannot initialize mutex.\n");
+	}
 	cdb->dbarray[cdb->numCust].name = cust->name;
 	cdb->dbarray[cdb->numCust].id = cust->id;
 	cdb->dbarray[cdb->numCust].balance = cust->balance;
@@ -178,7 +181,9 @@ int CDUpdate(CDB cdb, QNode order) {
 			cdb->dbarray[index].slistback = accepted;
 		}
 		cdb->dbarray[index].balance = accepted->updatedbalance;
+		pthread_mutex_lock(&cdb->revenuemutex);
 		cdb->revenue += order->price;
+		pthread_mutex_unlock(&cdb->revenuemutex);
 	}
 	return 1;
 }
