@@ -4,6 +4,7 @@
  * customer-database.h
  */
 
+#include "queue.h"
 #include <stdlib.h>
 #include <pthread.h>
 #include <stdio.h>
