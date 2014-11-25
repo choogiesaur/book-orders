@@ -14,10 +14,11 @@ int main(int argc, char **argv){
 	char *orders_file = argv[2];
 	char *categories_file = argv[3];
 	
+	printf("====ARGUMENT FILES====\n");
 	printf("customer file: %s\n", cust_file);
 	printf("order file: %s\n", orders_file);
 	printf("categories file: %s\n", categories_file);
-	printf("\n");
+	printf("====END ARG FILES====\n\n");
 	
 	CDB tcdb = CDCreate();
 	tcdb = read_customers(tcdb, cust_file); //first fxn
