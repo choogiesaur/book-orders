@@ -54,7 +54,7 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 	}
 	
 	char line[300]; //remember MAY NEED TO MODIFY
-	const char delims[2] = "|\n";
+	const char delims[3] = "|\n";
 	//cdb = CDCreate();
 	while(fgets(line, 300, customer_file) != NULL){ //stored in 'line'
 		printf("line: %s", line);
@@ -140,7 +140,7 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 		token = strtok(line, delims); //name
 		char *category = (char *) malloc(strlen(token) + 1);
 		strcpy(category, token);
-		category[strlen(token)] = '\0';
+		category[strlen(category)] = '\0';
 		printf("	category: '%s'\n", category);
 		
 		//consumer->category = category;
