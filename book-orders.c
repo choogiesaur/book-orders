@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
+#include <unistd.h>
 #include "customer-database.h"
 #include "consumer-database.h"
 #include "book-orders.h"
@@ -191,7 +193,7 @@ void *producer(char *filename){
 		id = strtol(token, NULL, 10);
 		printf("	customer id: %ld\n", id);
 
-		token = strtok(line, delims); //name
+		token = strtok(NULL, delims); //name
 		category =(char *) malloc(strlen(token) + 1);
 		strcpy(category, token);
 		category[strlen(token)] = '\0';
@@ -208,10 +210,10 @@ void *producer(char *filename){
 			while (csa->consumerdata[index].q->numElem == csa->consumerdata[index].q->max)
 			{
 				pthread_cond_signal(&csa->consumerdata[index].dataAvailable); // shout at consumer
-				printf( "Producer waits for consumer thread '%s' because of full queue.\n", csa->consumerdata[index].category);
+				printf("Producer waits for consumer thread '%s' because of full queue.\n", csa->consumerdata[index].category);
 				pthread_cond_wait(&csa->consumerdata[index].spaceAvailable, &csa->consumerdata[index].mutex);
+				printf("Producer resuming creation of orders for consumer thread '%s'.\n", csa->consumerdata[index].category);
 			}
-			printf( "Producer resuming creation of orders for consumer thread '%s'.\n", csa->consumerdata[index].category);
 			if(push(csa->consumerdata[index].q, order) == 0) {
 				printf("Error: Push failed.\n");
 				return NULL;
@@ -239,8 +241,9 @@ void *consumer(ConsumerStruct *consumerstruct) {
 		while (consumerstruct[index].q->numElem == 0)
 		{
 			pthread_cond_signal(&consumerstruct[index].spaceAvailable); // shout at producer
-			printf( "Consumer thread '%s' waits for producer because of empty queue.\n", consumerstruct[index].category);
+			printf("Consumer thread '%s' waits for producer because of empty queue.\n", consumerstruct[index].category);
 			pthread_cond_wait(&consumerstruct[index].dataAvailable, &consumerstruct[index].mutex);
+			printf("Consumer thread '%s' resuming order processing.\n", consumerstruct[index].category);
 		}
 		order = pop(consumerstruct->q);
 		index = binarySearch(cdb, order->id, 0, cdb->numCust);
