@@ -28,11 +28,11 @@ int main(int argc, char **argv){
 	csa = tcsa;
 	
 	pthread_t tid[csa->numCons + 1];
-	pthread_create(&tid[0], NULL, producer, orders_file);
+	pthread_create(&tid[0], NULL, producer, (void *)orders_file);
 	
 	int i;
 	for (i = 0; i < csa->numCons; i++) {
-		pthread_create(&tid[i + 1], NULL, consumer, &(csa->consumerdata[i]));
+		pthread_create(&tid[i + 1], NULL, consumer, (void *)&(csa->consumerdata[i]));
 	}
 	
 	for (i = 0; i < csa->numCons + 1; i++) {
@@ -153,7 +153,9 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 
 }
 
-void *producer(char *filename){
+void *producer(void *fn){
+	char *filename;
+	filename = (char *)fn;
 	printf("--------ORDERS--------\n");
 	FILE *orders_file;
 	orders_file = fopen(filename, "r");
@@ -222,16 +224,17 @@ void *producer(char *filename){
 			pthread_mutex_unlock(&csa->consumerdata[index].mutex);
 		}
 	}
-	pthread_cond_signal(&csa->done);
+	csa->done = 1;
 	return NULL;
 }
 
-void *consumer(ConsumerStruct *consumerstruct) {
-	if (cdb == NULL || consumerstruct == NULL) {
+void *consumer(void *cs) {
+	ConsumerStruct *consumerstruct;
+	consumerstruct = (ConsumerStruct *)cs;
+	if (cdb == NULL || cs == NULL) {
 		printf("ERROR: CDB or consumer struct NULL.\n");
 		return NULL;
 	}
-	
 	pthread_detach(pthread_self());
 	while(!csa->done){
 		int index;
