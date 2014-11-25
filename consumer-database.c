@@ -50,6 +50,7 @@ CSA CSACreate() {
 	csa->consumerdata = (ConsumerStruct *)malloc(10 * sizeof(ConsumerStruct));
 	csa->numCons = 0;
 	csa->size = 10;
+	csa->done = 0;
 	return csa;
 }
 
