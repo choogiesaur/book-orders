@@ -88,11 +88,11 @@ int CSAInsert(CSA csa, char *category) {
 	if (pthread_mutex_init(&(csa->consumerdata[csa->numCons].mutex), 0) != 0) {
 		printf("Error: Cannot initialize mutex.\n");
 	}
-	if (pthread_cond_init(&(csa->consumerdata[csa->numCons].notempty), 0) != 0) {
-		printf("Error: Cannot initialize conditional variable notempty.\n");
+	if (pthread_cond_init(&(csa->consumerdata[csa->numCons].dataAvailable), 0) != 0) {
+		printf("Error: Cannot initialize conditional variable dataAvailable.\n");
 	}
-	if (pthread_cond_init(&(csa->consumerdata[csa->numCons].full), 0) != 0) {
-		printf("Error: Cannot initialize conditional variable full.\n");
+	if (pthread_cond_init(&(csa->consumerdata[csa->numCons].spaceAvailable), 0) != 0) {
+		printf("Error: Cannot initialize conditional variable spaceAvailable.\n");
 	}
 	csa->numCons++;
 	return 1;
