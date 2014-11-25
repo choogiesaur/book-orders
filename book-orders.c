@@ -20,7 +20,6 @@ int main(int argc, char **argv){
 	CDB tcdb = CDCreate();
 	tcdb = read_customers(tcdb, cust_file); //first fxn
 	cdb = tcdb;
-	PrintDB(cdb);
 	
 	CSA tcsa = CSACreate();
 	tcsa = read_categories(tcsa, categories_file); //2nd fxn
@@ -37,6 +36,8 @@ int main(int argc, char **argv){
 	for (i = 0; i < csa->numCons + 1; i++) {
 		pthread_join(tid[i], NULL);
 	}
+	
+	PrintDB(cdb);
 	return 0;
 }
 
