@@ -99,7 +99,7 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		CDInsert(cdb, cust);
 				
 	}
-	void *vcdb = (void *) cdb->dbarray; //vdb is the actual customer array, casted to a void (doesnt have the cdb wrapper)
+	void *vcdb = (void *) cdb->dbarray; //vcdb is the actual customer array, casted to a void (doesnt have the cdb wrapper)
 	qsort(vcdb,cdb->numCust,sizeof(Customer),customercomp);
 	cdb->dbarray = (Customer *) vcdb;
 	return cdb;
@@ -133,11 +133,14 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 		//consumer->category = category;
 		CSAInsert(csa, category);
 	}
+	void *vcsa = (void *) csa->consumerdata; //vcsa is the actual consumerdata array, casted to a void (doesnt have the csa wrapper)
+	qsort(vcsa,csa->numCons,sizeof(ConsumerStruct),consumercomp);
+	csa->consumerdata = (ConsumerStruct *) vcsa;
 	return csa;
 
 }
 
-int read_orders(char *filename){
+int producer(CSA csa, char *filename){
 	printf("--------ORDERS--------\n");
 	FILE *orders_file;
 	orders_file = fopen(filename, "r");
@@ -151,20 +154,22 @@ int read_orders(char *filename){
 	const char delims[2] = "|\n";
 	
 	while(fgets(line, 300, orders_file) != NULL){ //each line is an order
-	
+		int index;
+		QNode *order;
+		order = (QNode *)malloc(sizeof(QNode));
 		printf("line: %s", line);
 		char *token;
 
-		char *title;	//book title
+		char *name;	//book title
 		double cost;	//book cost
 		long id;	//customer id
 		char *category;	//book category
 		
 		token = strtok(line, delims); //name
-		title =(char *) malloc(strlen(token) + 1);
-		strcpy(title, token);
-		title[strlen(token)] = '\0';
-		printf("	title: %s\n", title);
+		name =(char *) malloc(strlen(token) + 1);
+		strcpy(name, token);
+		name[strlen(token)] = '\0';
+		printf("	title: %s\n", name);
 
 		token = strtok(NULL, delims); //balance
 		cost = strtod(token, NULL);
@@ -179,6 +184,29 @@ int read_orders(char *filename){
 		strcpy(category, token);
 		category[strlen(token)] = '\0';
 		printf("	category: %s\n", category);
+		
+		order->bname = name;
+		order->price = cost;
+		order->id = id;
+		order->category = category;
+		order->next = NULL;
+		index = binarySearch2(csa, order->category, 0, csa->numCons);
+		if (index != -1) {
+			pthread_mutex_lock(csa->consumerdata[index].mutex);
+			while (csa->consumerdata[index].q->numElem == csa->consumerdata[index].q->max)
+			{
+				pthread_cond_signal(&csa->consumerdata[index].dataAvailable); // shout at consumer
+				printf( "Producer waits for consumer thread '%s' because of full queue.\n", csa->consumerdata[index].category);
+				pthread_cond_wait(&csa->consumerdata[index].spaceAvailable, &csa->consumerdata[index].mutex);
+			}
+			printf( "Producer resuming creation of orders for consumer thread '%s'.\n", csa->consumerdata[index].category);
+			if(push(csa->consumerdata[index].q, order) == 0) {
+				printf("Error: Push failed.\n");
+				return 0;
+			}
+			pthread_cond_signal(&csa->consumerdata[index].dataAvailable);
+			pthread_mutex_unlock(csa->consumerdata[index].mutex);
+		}
 	}
 	return 0;
 
