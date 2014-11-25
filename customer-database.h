@@ -62,7 +62,7 @@ CDB CDCreate();
 
 int CDDestroy(CDB cdb);
 
-int CDInsert(CDB cdb, struct customer *cust);
+int CDInsert(CDB cdb, char *name, long id, double balance, char *address, char *state, char *zip);
 
 int CDUpdate(CDB cdb, QNode *order);
 
