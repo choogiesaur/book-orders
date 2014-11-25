@@ -108,6 +108,12 @@ void PrintCSA(CSA csa) {
 	for (i = 0; i < csa->numCons; i++) {
 		printf("=== BEGIN CONSUMER INFO ===\n");
 		printf("Consumer category: %s\n", csa->consumerdata[i].category);
+		if (csa->consumerdata[i].q->front != NULL) {
+			printf("The queue is non-empty.\n");
+		}
+		else {
+			printf("The queue is empty.\n");
+		}
 		printf("=== END CONSUMER INFO ===\n");
 		printf("\n\n");
 	}
