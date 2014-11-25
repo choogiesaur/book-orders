@@ -14,11 +14,10 @@ int main(int argc, char **argv){
 	char *orders_file = argv[2];
 	char *categories_file = argv[3];
 	
-	printf("====ARGUMENT FILES====\n");
 	printf("customer file: %s\n", cust_file);
 	printf("order file: %s\n", orders_file);
 	printf("categories file: %s\n", categories_file);
-	printf("====END ARG FILES====\n\n");
+	printf("\n");
 	
 	CDB tcdb = CDCreate();
 	tcdb = read_customers(tcdb, cust_file); //first fxn
@@ -73,7 +72,7 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		token = strtok(line, delims); //name
 		name =(char *) malloc(strlen(token) + 1);
 		strcpy(name, token);
-		name[strlen(token)] = '\0';
+		name[strlen(name)] = '\0';
 		printf("	name: %s\n", name);
 		
 		token = strtok(NULL, delims); //id
@@ -87,19 +86,19 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		token = strtok(NULL, delims);
 		address =(char *) malloc(strlen(token) + 1);
 		strcpy(address, token);
-		address[strlen(token)] = '\0';
+		address[strlen(address)] = '\0';
 		printf("	addr: %s\n", address);
 		
 		token = strtok(NULL, delims);
 		state =(char *) malloc(strlen(token) + 1);
 		strcpy(state, token);
-		state[strlen(token)] = '\0';
+		state[strlen(state)] = '\0';
 		printf("	state: %s\n", state);
 		
 		token = strtok(NULL, delims);
 		zip =(char *) malloc(strlen(token) + 1);
 		strcpy(zip, token);
-		zip[strlen(token)] = '\0';
+		zip[strlen(zip)] = '\0';
 		printf("	zip: %s\n", zip);
 		
 		cust->name = name;
@@ -185,7 +184,7 @@ void *producer(void *fn){
 		token = strtok(line, delims); //name
 		name =(char *) malloc(strlen(token) + 1);
 		strcpy(name, token);
-		name[strlen(token)] = '\0';
+		name[strlen(name)] = '\0';
 		printf("	title: %s\n", name);
 
 		token = strtok(NULL, delims); //balance
@@ -199,7 +198,7 @@ void *producer(void *fn){
 		token = strtok(NULL, delims); //name
 		category =(char *) malloc(strlen(token) + 1);
 		strcpy(category, token);
-		category[strlen(token)] = '\0';
+		category[strlen(category)] = '\0';
 		printf("	category: %s\n", category);
 		
 		order->bname = name;
@@ -221,7 +220,7 @@ void *producer(void *fn){
 				printf("Error: Push failed.\n");
 				return NULL;
 			}
-			pthread_cond_signal(&csa->consumerdata[index].dataAvailable);
+			pthread_cond_signal(&csa->consumerdata[index].dataAvailable); // shout at consumer
 			pthread_mutex_unlock(&csa->consumerdata[index].mutex);
 		}
 	}
