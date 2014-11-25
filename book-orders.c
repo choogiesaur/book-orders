@@ -17,16 +17,26 @@ int main(int argc, char **argv){
 	printf("categories file: %s\n", categories_file);
 	printf("\n");
 	
-	CDB cdb;
-	cdb = CDCreate();
-	cdb = read_customers(cdb, cust_file); //first fxn
+	CDB tcdb = CDCreate();
+	tcdb = read_customers(tcdb, cust_file); //first fxn
+	cdb = tcdb;
 	PrintDB(cdb);
 	
-	CSA csa = CSACreate();
-	csa = read_categories(csa, categories_file); //2nd fxn
+	CSA tcsa = CSACreate();
+	tcsa = read_categories(tcsa, categories_file); //2nd fxn
+	csa = tcsa;
 	
-	read_orders(orders_file); //3rd fxn
+	pthread_t tid[csa->numCons + 1];
+	pthread_create(&tid[0], NULL, producer, orders_file);
 	
+	int i;
+	for (i = 0; i < csa->numCons; i++) {
+		pthread_create(&tid[i + 1], NULL, consumer, &(csa->consumerdata[i]));
+	}
+	
+	for (i = 0; i < csa->numCons + 1; i++) {
+		pthread_join(tid[i], NULL);
+	}
 	return 0;
 }
 
@@ -140,20 +150,20 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 
 }
 
-void producer(CSA csa, char *filename){
+void *producer(char *filename){
 	printf("--------ORDERS--------\n");
 	FILE *orders_file;
 	orders_file = fopen(filename, "r");
 	
 	if (orders_file == NULL){
     		printf("ERR: could not read orders file %s\n", filename);
-    		return;
+    		return NULL;
 	}
 	
 	char line[300];
 	const char delims[2] = "|\n";
 	
-	pthread_detach( pthread_self() );
+	pthread_detach(pthread_self());
 	while(fgets(line, 300, orders_file) != NULL){ //each line is an order
 		int index;
 		QNode *order;
@@ -203,23 +213,23 @@ void producer(CSA csa, char *filename){
 			printf( "Producer resuming creation of orders for consumer thread '%s'.\n", csa->consumerdata[index].category);
 			if(push(csa->consumerdata[index].q, order) == 0) {
 				printf("Error: Push failed.\n");
-				return;
+				return NULL;
 			}
 			pthread_cond_signal(&csa->consumerdata[index].dataAvailable);
 			pthread_mutex_unlock(&csa->consumerdata[index].mutex);
 		}
 	}
 	pthread_cond_signal(&csa->done);
-	return;
+	return NULL;
 }
 
-void consumer(CDB cdb, ConsumerStruct *consumerstruct){
+void *consumer(ConsumerStruct *consumerstruct) {
 	if (cdb == NULL || consumerstruct == NULL) {
 		printf("ERROR: CDB or consumer struct NULL.\n");
-		return;
+		return NULL;
 	}
 	
-	pthread_detach( pthread_self() );
+	pthread_detach(pthread_self());
 	while(!csa->done){
 		int index;
 		QNode *order;
@@ -237,10 +247,13 @@ void consumer(CDB cdb, ConsumerStruct *consumerstruct){
 			pthread_mutex_lock(&cdb->dbarray[index].queue_mutex);
 			CDUpdate(cdb, order);
 		}
+		free(order->bname);
+		free(order->category);
+		free(order);
 		pthread_cond_signal(&consumerstruct[index].spaceAvailable); // shout at producer
 		pthread_mutex_unlock(&consumerstruct[index].mutex);
 	}
-	return;
+	return NULL;
 }
 /*------------HELPER FUNCTIONS-------------*/
 
