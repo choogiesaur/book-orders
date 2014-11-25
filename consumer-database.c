@@ -14,7 +14,7 @@ int binarySearch2(CSA csa, char *key, int low, int high) {
 	}
 	int mid;
     mid = low + ((high - low) / 2);
-    if (csa->consumerdata[mid].category == key) {
+    if (strcmp(csa->consumerdata[mid].category, key) == 0) {
 		return mid;
 	} else if (strcmp(csa->consumerdata[mid].category, key) < 0) {
 		return binarySearch2(csa, key, (mid + 1), high);
