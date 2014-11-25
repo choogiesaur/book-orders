@@ -60,6 +60,6 @@ QNode *pop(Queue q) {
 	r = q->front;
 	q->front = q->front->next;
 	q->numElem--;
-	printf("Pushing order %s|%f|%d|%s\n", r->bname, r->price, r->id, r->category);
+	printf("Popping order %s|%f|%d|%s\n", r->bname, r->price, r->id, r->category);
 	return r;
 }
