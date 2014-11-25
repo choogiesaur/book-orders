@@ -132,6 +132,7 @@ int CDInsert(CDB cdb, Customer *cust) {
 	cdb->dbarray[cdb->numCust].slist = NULL;
 	cdb->dbarray[cdb->numCust].rlist = NULL;
 	cdb->numCust++;
+	free(cust);
 	return 1;
 }
 
