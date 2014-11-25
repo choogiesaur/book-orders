@@ -193,8 +193,9 @@ void PrintDB(CDB cdb) {
 		printf("Error: CDB is NULL.\n");
 		return;
 	}
+	printf("=== TOTAL REVENUE GENERATED: %f ===\n\n", cdb->revenue);
 	int i;
-	for (i = 0; i < cdb->numCust; i++) {
+	for (i = 0; i < cdb->numCust; i++) {		
 		printf("=== BEGIN CUSTOMER INFO ===\n");
 		printf("### BALANCE ###\n");
 		printf("Customer name: %s\n", cdb->dbarray[i].name);
@@ -209,6 +210,9 @@ void PrintDB(CDB cdb) {
 				curr = curr->next;
 			}
 		}
+		else {
+			printf("=== EMPTY LIST ===\n");
+		}
 		printf("### REJECTED ORDERS ###\n");
 		if (cdb->dbarray[i].rlist != NULL) {
 			ROrder *curr;
@@ -217,6 +221,9 @@ void PrintDB(CDB cdb) {
 				printf("\"%s\"|%f\n", curr->bname, curr->price);
 				curr = curr->next;
 			}
+		}
+		else {
+			printf("=== EMPTY LIST ===\n");
 		}
 		printf("=== END CUSTOMER INFO ===\n");
 		printf("\n\n");
