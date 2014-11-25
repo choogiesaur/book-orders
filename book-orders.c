@@ -140,19 +140,20 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 
 }
 
-int producer(CSA csa, char *filename){
+void producer(CSA csa, char *filename){
 	printf("--------ORDERS--------\n");
 	FILE *orders_file;
 	orders_file = fopen(filename, "r");
 	
 	if (orders_file == NULL){
     		printf("ERR: could not read orders file %s\n", filename);
-    		return -1;
+    		return;
 	}
 	
 	char line[300];
 	const char delims[2] = "|\n";
 	
+	pthread_detach( pthread_self() );
 	while(fgets(line, 300, orders_file) != NULL){ //each line is an order
 		int index;
 		QNode *order;
@@ -191,8 +192,8 @@ int producer(CSA csa, char *filename){
 		order->category = category;
 		order->next = NULL;
 		index = binarySearch2(csa, order->category, 0, csa->numCons);
-		if (index != -1) {
-			pthread_mutex_lock(csa->consumerdata[index].mutex);
+		if (index >= 0) {
+			pthread_mutex_lock(&csa->consumerdata[index].mutex);
 			while (csa->consumerdata[index].q->numElem == csa->consumerdata[index].q->max)
 			{
 				pthread_cond_signal(&csa->consumerdata[index].dataAvailable); // shout at consumer
@@ -202,14 +203,44 @@ int producer(CSA csa, char *filename){
 			printf( "Producer resuming creation of orders for consumer thread '%s'.\n", csa->consumerdata[index].category);
 			if(push(csa->consumerdata[index].q, order) == 0) {
 				printf("Error: Push failed.\n");
-				return 0;
+				return;
 			}
 			pthread_cond_signal(&csa->consumerdata[index].dataAvailable);
-			pthread_mutex_unlock(csa->consumerdata[index].mutex);
+			pthread_mutex_unlock(&csa->consumerdata[index].mutex);
 		}
 	}
-	return 0;
+	pthread_cond_signal(&csa->done);
+	return;
+}
 
+void consumer(CDB cdb, ConsumerStruct *consumerstruct){
+	if (cdb == NULL || consumerstruct == NULL) {
+		printf("ERROR: CDB or consumer struct NULL.\n");
+		return;
+	}
+	
+	pthread_detach( pthread_self() );
+	while(!csa->done){
+		int index;
+		QNode *order;
+		
+		pthread_mutex_lock(&consumerstruct[index].mutex);
+		while (consumerstruct[index].q->numElem == 0)
+		{
+			pthread_cond_signal(&consumerstruct[index].spaceAvailable); // shout at producer
+			printf( "Consumer thread '%s' waits for producer because of empty queue.\n", consumerstruct[index].category);
+			pthread_cond_wait(&consumerstruct[index].dataAvailable, &consumerstruct[index].mutex);
+		}
+		order = pop(consumerstruct->q);
+		index = binarySearch(cdb, order->id, 0, cdb->numCust);
+		if (index >= 0) {
+			pthread_mutex_lock(&cdb->dbarray[index].queue_mutex);
+			CDUpdate(cdb, order);
+		}
+		pthread_cond_signal(&consumerstruct[index].spaceAvailable); // shout at producer
+		pthread_mutex_unlock(&consumerstruct[index].mutex);
+	}
+	return;
 }
 /*------------HELPER FUNCTIONS-------------*/
 
