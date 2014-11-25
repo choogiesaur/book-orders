@@ -193,9 +193,8 @@ void PrintDB(CDB cdb) {
 		printf("Error: CDB is NULL.\n");
 		return;
 	}
-	printf("=== TOTAL REVENUE GENERATED: %f ===\n\n", cdb->revenue);
 	int i;
-	for (i = 0; i < cdb->numCust; i++) {		
+	for (i = 0; i < cdb->numCust; i++) {
 		printf("=== BEGIN CUSTOMER INFO ===\n");
 		printf("### BALANCE ###\n");
 		printf("Customer name: %s\n", cdb->dbarray[i].name);
