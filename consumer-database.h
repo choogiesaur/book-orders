@@ -20,7 +20,7 @@ struct consumer_struct {
 typedef struct consumer_struct ConsumerStruct;
 
 struct consumer_struct_array {
-	pthread_cond_t done;
+	int done;
 	int numCons;
 	int size;
 	ConsumerStruct *consumerdata;
