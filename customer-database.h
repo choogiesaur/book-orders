@@ -63,7 +63,7 @@ int CDDestroy(CDB cdb);
 
 int CDInsert(CDB cdb, struct customer *cust);
 
-int CDUpdate(CDB cdb, QNode order);
+int CDUpdate(CDB cdb, QNode *order);
 
 void PrintDB(CDB cdb);
 
