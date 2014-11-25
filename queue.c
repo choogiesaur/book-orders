@@ -12,7 +12,7 @@ Queue QCreate() {
 	q->numElem = 0;
 	q->front = NULL;
 	q->back = NULL;
-	q->max = 256;
+	q->max = 128;
 	return q;
 }
 
@@ -33,6 +33,10 @@ int QDestroy(Queue q) {
 }
 
 int push(Queue q, QNode *n) {
+	if (n == NULL || q == NULL) {
+		printf("Error: Cannot push NULL node or Queue is NULL.\n");
+		return 0;
+	}
 	if (q->front == NULL) {
 		q->front = n;
 		q->back = n;
