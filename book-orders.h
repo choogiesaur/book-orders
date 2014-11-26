@@ -16,6 +16,4 @@ void *producer(void *fn);
 
 void *consumer(void *cs);
 
-void printCustomer(Customer *dude);
-
 #endif
