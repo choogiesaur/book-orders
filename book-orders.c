@@ -108,7 +108,6 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		cust->state = state;
 		cust->zip = zip;
 		
-		//printCustomer(cust);
 		CDInsert(cdb, cust);
 				
 	}
@@ -206,7 +205,7 @@ void *producer(void *fn){
 		order->id = id;
 		order->category = category;
 		order->next = NULL;
-		index = binarySearch2(csa, order->category, 0, csa->numCons);
+		index = binarySearch2(csa, order->category, 0, csa->numCons - 1);
 		if (index >= 0) {
 			pthread_mutex_lock(&csa->consumerdata[index].mutex);
 			while (csa->consumerdata[index].q->numElem == csa->consumerdata[index].q->max)
@@ -249,11 +248,14 @@ void *consumer(void *cs) {
 			printf("Consumer thread '%s' resuming order processing.\n", consumerstruct[index].category);
 		}
 		order = pop(consumerstruct->q);
-		index = binarySearch(cdb, order->id, 0, cdb->numCust);
+		index = binarySearch(cdb, order->id, 0, cdb->numCust - 1);
 		if (index >= 0) {
 			pthread_mutex_lock(&cdb->dbarray[index].queue_mutex);
-			CDUpdate(cdb, order);
+			CDUpdate(cdb, order, index);
 			pthread_mutex_unlock(&cdb->dbarray[index].queue_mutex);
+		} else {
+			printf("Error: customer not found in CDUpdate.");
+			return 0;
 		}
 		free(order->bname);
 		free(order->category);
