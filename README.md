@@ -6,6 +6,7 @@ super secret project with omar
 *Note: when running, you may adjust the buffer size for the orders at the top of queue.h
 
 Data Structures
+
 Customer Struct - Each customer struct holds customer name, numerical customer id, balance, address, state, zip, as well as two lists: one for Successful Orders and one for Rejected Orders (along with pointers to the back of the list, to optimize list insertion). Lastly it has a mutex that locks itself to access by the Consumer threads. 
 
 Customer Database (CDB) – This is a wrapper for an array of Customer structs. It holds 1) the array of customer structs, 2) a double for the total revenue gained from orders, 3) the number of customers in the array, and 4) the total size of the array. It also holds a mutex to lock access to its revenue field, so only one consumer can update it at a time.
@@ -15,6 +16,7 @@ Consumer Struct – Holds the information that each consumer thread is responsib
 Consumer Struct Array (CSA) – Holds 1) an integer flag to signal to the consumers that the producer is done with the orders, 2) the number of consumers structs so far, 3) the actual size of the array 4) the actual array of Consumer Structs.
 
 Design
+
 The program starts by reading in the data from various text files. 
 
 	- read_customers() parses the database.txt, creates customer structs, and calls CDInsert() to 	toss these into the customer database. 
