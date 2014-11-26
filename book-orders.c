@@ -36,9 +36,9 @@ int main(int argc, char **argv){
 		pthread_create(&tid[i + 1], NULL, consumer, (void *)&(csa->consumerdata[i]));
 	}
 	
-	for (i = 0; i < csa->numCons + 1; i++) {
-		pthread_join(tid[i], NULL);
-	}
+	//for (i = 0; i < csa->numCons + 1; i++) {
+	//	pthread_join(tid[i], NULL);
+	//}
 	
 	PrintDB(cdb);
 	printf("ENDING MAIN\n");
@@ -276,11 +276,8 @@ void *consumer(void *cs) {
 		free(order->bname);
 		free(order->category);
 		free(order);
-		//printf("done with free\n");
 		pthread_cond_signal(&consumerstruct->spaceAvailable); // shout at producer
-		//printf("done with signal\n");
 		pthread_mutex_unlock(&consumerstruct->mutex);
-		//printf("done with unlock\n");
 		PrintDB(cdb);
 	}
 	return NULL;
