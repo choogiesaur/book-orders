@@ -6,7 +6,7 @@ debug:
 	make DEBUG=TRUE
 
 book-orders: book-orders.o customer-database.o consumer-database.o queue.o
-	$(COMPILER) $(CCFLAGS) -o book-orders book-orders.o customer-database.o consumer-database.o queue.o
+	$(COMPILER) $(CCFLAGS) -o book-orders book-orders.o customer-database.o consumer-database.o queue.o -lpthread
 
 book-orders.o: book-orders.c book-orders.h
 	$(COMPILER) $(CCFLAGS) -c book-orders.c
