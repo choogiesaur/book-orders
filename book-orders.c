@@ -23,6 +23,7 @@ int main(int argc, char **argv){
 	tcdb = read_customers(tcdb, cust_file); //first fxn
 	cdb = tcdb;
 	
+	
 	CSA tcsa = CSACreate();
 	tcsa = read_categories(tcsa, categories_file); //2nd fxn
 	csa = tcsa;
@@ -73,33 +74,33 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		name =(char *) malloc(strlen(token) + 1);
 		strcpy(name, token);
 		name[strlen(name)] = '\0';
-		printf("	name: %s\n", name);
+		//printf("	name: %s\n", name);
 		
 		token = strtok(NULL, delims); //id
 		id = strtol(token, NULL, 10);
-		printf("	id: %ld\n", id);
+		//printf("	id: %ld\n", id);
 		
 		token = strtok(NULL, delims); //balance
 		balance = strtod(token, NULL);
-		printf("	balance: %f\n", balance);
+		//printf("	balance: %f\n", balance);
 		
 		token = strtok(NULL, delims);
 		address =(char *) malloc(strlen(token) + 1);
 		strcpy(address, token);
 		address[strlen(address)] = '\0';
-		printf("	addr: %s\n", address);
+		//printf("	addr: %s\n", address);
 		
 		token = strtok(NULL, delims);
 		state =(char *) malloc(strlen(token) + 1);
 		strcpy(state, token);
 		state[strlen(state)] = '\0';
-		printf("	state: %s\n", state);
+		//printf("	state: %s\n", state);
 		
 		token = strtok(NULL, delims);
 		zip =(char *) malloc(strlen(token) + 1);
 		strcpy(zip, token);
 		zip[strlen(zip)] = '\0';
-		printf("	zip: %s\n", zip);
+		//printf("	zip: %s\n", zip);
 		
 		cust->name = name;
 		cust->id = id;
@@ -108,13 +109,16 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 		cust->state = state;
 		cust->zip = zip;
 		
+		//printCustomer(cust);
 		CDInsert(cdb, cust);
+		free(cust);
 				
 	}
 	void *vcdb = (void *) cdb->dbarray; //vcdb is the actual customer array, casted to a void (doesnt have the cdb wrapper)
 	qsort(vcdb,cdb->numCust,sizeof(Customer),customercomp);
 	cdb->dbarray = (Customer *) vcdb;
 	return cdb;
+
 }
 
 CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
@@ -130,6 +134,7 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 	char line[200]; //remember MAY NEED TO MODIFY
 	const char delims[3] = "\n ";
 	
+	printf("\n----printing categories-----\n");
 	while(fgets(line, 200, categories_file) != NULL){ //stored in 'line'
 	
 		//ConsumerStruct *consumer =(ConsumerStruct *) malloc(sizeof(ConsumerStruct));
@@ -148,6 +153,7 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 	void *vcsa = (void *) csa->consumerdata; //vcsa is the actual consumerdata array, casted to a void (doesnt have the csa wrapper)
 	qsort(vcsa,csa->numCons,sizeof(ConsumerStruct),consumercomp);
 	csa->consumerdata = (ConsumerStruct *) vcsa;
+	printf("----ending categories-----\n\n");
 	return csa;
 
 }
@@ -167,7 +173,7 @@ void *producer(void *fn){
 	char line[300];
 	const char delims[3] = "|\n";
 	
-	pthread_detach(pthread_self());
+	//pthread_detach(pthread_self());
 	while(fgets(line, 300, orders_file) != NULL){ //each line is an order
 		int index;
 		QNode *order;
@@ -205,7 +211,7 @@ void *producer(void *fn){
 		order->id = id;
 		order->category = category;
 		order->next = NULL;
-		index = binarySearch2(csa, order->category, 0, csa->numCons - 1);
+		index = binarySearch2(csa, order->category, 0, csa->numCons -1);
 		if (index >= 0) {
 			pthread_mutex_lock(&csa->consumerdata[index].mutex);
 			while (csa->consumerdata[index].q->numElem == csa->consumerdata[index].q->max)
@@ -234,7 +240,7 @@ void *consumer(void *cs) {
 		printf("ERROR: CDB or consumer struct NULL.\n");
 		return NULL;
 	}
-	pthread_detach(pthread_self());
+	//pthread_detach(pthread_self());
 	while(!csa->done){
 		int index;
 		QNode *order;
@@ -248,14 +254,12 @@ void *consumer(void *cs) {
 			printf("Consumer thread '%s' resuming order processing.\n", consumerstruct[index].category);
 		}
 		order = pop(consumerstruct->q);
+		printf("\nCONSUMER CURRENT ORDER: %s\n", order->bname);
 		index = binarySearch(cdb, order->id, 0, cdb->numCust - 1);
 		if (index >= 0) {
 			pthread_mutex_lock(&cdb->dbarray[index].queue_mutex);
 			CDUpdate(cdb, order, index);
 			pthread_mutex_unlock(&cdb->dbarray[index].queue_mutex);
-		} else {
-			printf("Error: customer not found in CDUpdate.");
-			return 0;
 		}
 		free(order->bname);
 		free(order->category);
@@ -264,16 +268,4 @@ void *consumer(void *cs) {
 		pthread_mutex_unlock(&consumerstruct[index].mutex);
 	}
 	return NULL;
-}
-/*------------HELPER FUNCTIONS-------------*/
-
-void printCustomer(Customer *dude){
-	printf("---PRINTING CUSTOMER---\n");
-	printf("Customer Name: %s\n", dude->name);
-	printf("Customer ID: %ld\n", dude->id);
-	printf("Customer Balance: %f\n", dude->balance);
-	printf("Customer Address: %s\n", dude->address);
-	printf("Customer State: %s\n", dude->state);
-	printf("Customer Zip: %s\n", dude->zip);
-	printf("---END PRINTING CUSTOMER---\n");
 }
