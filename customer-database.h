@@ -68,4 +68,6 @@ int CDUpdate(CDB cdb, QNode *order, int indx);
 
 void PrintDB(CDB cdb);
 
+void printCustomer(Customer *dude);
+
 #endif
