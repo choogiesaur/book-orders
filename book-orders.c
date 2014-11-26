@@ -36,9 +36,9 @@ int main(int argc, char **argv){
 		pthread_create(&tid[i + 1], NULL, consumer, (void *)&(csa->consumerdata[i]));
 	}
 	
-	//for (i = 0; i < csa->numCons + 1; i++) {
-	//	pthread_join(tid[i], NULL);
-	//}
+	for (i = 0; i < csa->numCons + 1; i++) {
+		pthread_join(tid[i], NULL);
+	}
 	
 	PrintDB(cdb);
 	printf("ENDING MAIN\n");
@@ -56,7 +56,11 @@ CDB read_customers(CDB cdb, char *filename){ //cdb is the customer database ptr 
 	}
 	
 	char line[300]; //remember MAY NEED TO MODIFY
-	const char delims[3] = "|\n";
+	char delims[3];
+	delims[0] = '|';
+	delims[1] = '\n';
+	delims[2] = '\0';
+
 	//cdb = CDCreate();
 	while(fgets(line, 300, customer_file) != NULL){ //stored in 'line'
 		printf("line: %s", line);
@@ -133,12 +137,13 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 	}
 	
 	char line[200]; //remember MAY NEED TO MODIFY
-	const char delims[3] = "\n ";
-	
+	char delims[3];
+	delims[0] = '|';
+	delims[1] = '\n';
+	delims[2] = '\0';
+
 	printf("\n----printing categories-----\n");
 	while(fgets(line, 200, categories_file) != NULL){ //stored in 'line'
-	
-		//ConsumerStruct *consumer =(ConsumerStruct *) malloc(sizeof(ConsumerStruct));
 		
 		printf("line: %s", line);
 		char *token;
@@ -147,8 +152,7 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 		strcpy(category, token);
 		category[strlen(category)] = '\0';
 		printf("	category: '%s'\n", category);
-		
-		//consumer->category = category;
+	
 		CSAInsert(csa, category);
 	}
 	void *vcsa = (void *) csa->consumerdata; //vcsa is the actual consumerdata array, casted to a void (doesnt have the csa wrapper)
@@ -160,6 +164,7 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 }
 
 void *producer(void *fn){
+	//pthread_detach(pthread_self());
 	char *filename;
 	filename = (char *)fn;
 	//printf("--------ORDERS--------\n");
@@ -172,8 +177,11 @@ void *producer(void *fn){
 	}
 	
 	char line[300];
-	const char delims[3] = "|\n";
-	
+	char delims[3];
+	delims[0] = '|';
+	delims[1] = '\n';
+	delims[2] = '\0';
+
 	//pthread_detach(pthread_self());
 	while(fgets(line, 300, orders_file) != NULL){ //each line is an order
 		int index;
@@ -238,10 +246,12 @@ void *producer(void *fn){
 	for (i = 0; i < csa->numCons - 1; i++) {
 		pthread_cond_signal(&csa->consumerdata[i].dataAvailable);
 	}
+	PrintDB(cdb);
 	return NULL;
 }
 
 void *consumer(void *cs) {
+	//pthread_detach(pthread_self());
 	ConsumerStruct *consumerstruct;
 	consumerstruct = (ConsumerStruct *)cs;
 	if (cdb == NULL || cs == NULL) {
@@ -253,7 +263,7 @@ void *consumer(void *cs) {
 		QNode *order;
 		
 		pthread_mutex_lock(&consumerstruct->mutex);
-		if (consumerstruct->q->numElem == 0 && !csa->done)
+		if (consumerstruct->q->numElem <= 0 && !csa->done)
 		{
 			pthread_cond_signal(&consumerstruct->spaceAvailable); // shout at producer
 			printf("CONSUMER thread '%s' waits for producer because of empty queue.\n", consumerstruct->category);
@@ -278,7 +288,8 @@ void *consumer(void *cs) {
 		free(order);
 		pthread_cond_signal(&consumerstruct->spaceAvailable); // shout at producer
 		pthread_mutex_unlock(&consumerstruct->mutex);
-		PrintDB(cdb);
+		//PrintDB(cdb);
 	}
+	printf("Consumer %s is done.\n", consumerstruct->category);
 	return NULL;
 }
