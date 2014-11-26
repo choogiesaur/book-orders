@@ -41,6 +41,7 @@ int main(int argc, char **argv){
 	}
 	
 	PrintDB(cdb);
+	printf("ENDING MAIN\n");
 	return 0;
 }
 
@@ -161,7 +162,7 @@ CSA read_categories(CSA csa, char *filename){ //reads in the categories textfile
 void *producer(void *fn){
 	char *filename;
 	filename = (char *)fn;
-	printf("--------ORDERS--------\n");
+	//printf("--------ORDERS--------\n");
 	FILE *orders_file;
 	orders_file = fopen(filename, "r");
 	
@@ -178,7 +179,8 @@ void *producer(void *fn){
 		int index;
 		QNode *order;
 		order = (QNode *)malloc(sizeof(QNode));
-		printf("line: %s", line);
+		//printf("line: %s", line);
+		//printf("PRODUCER: Preparing order for %s\n", order->bname);
 		char *token;
 
 		char *name;	//book title
@@ -190,6 +192,7 @@ void *producer(void *fn){
 		name =(char *) malloc(strlen(token) + 1);
 		strcpy(name, token);
 		name[strlen(name)] = '\0';
+		printf("PRODUCER: Preparing order for %s\n", name);
 		printf("	title: %s\n", name);
 
 		token = strtok(NULL, delims); //balance
@@ -212,9 +215,10 @@ void *producer(void *fn){
 		order->category = category;
 		order->next = NULL;
 		index = binarySearch2(csa, order->category, 0, csa->numCons -1);
+		printf("consumer index: %d\n", index);
 		if (index >= 0) {
 			pthread_mutex_lock(&csa->consumerdata[index].mutex);
-			while (csa->consumerdata[index].q->numElem == csa->consumerdata[index].q->max)
+			if (csa->consumerdata[index].q->numElem == csa->consumerdata[index].q->max)
 			{
 				pthread_cond_signal(&csa->consumerdata[index].dataAvailable); // shout at consumer
 				printf("PRODUCER waits for consumer thread '%s' because of full queue.\n", csa->consumerdata[index].category);
@@ -230,6 +234,10 @@ void *producer(void *fn){
 		}
 	}
 	csa->done = 1;
+	int i;
+	for (i = 0; i < csa->numCons - 1; i++) {
+		pthread_cond_signal(&csa->consumerdata[i].dataAvailable);
+	}
 	return NULL;
 }
 
@@ -240,12 +248,12 @@ void *consumer(void *cs) {
 		printf("ERROR: CDB or consumer struct NULL.\n");
 		return NULL;
 	}
-	while(!csa->done){
+	while(!csa->done || consumerstruct->q->numElem >= 0){
 		int index;
 		QNode *order;
 		
 		pthread_mutex_lock(&consumerstruct->mutex);
-		while (consumerstruct->q->numElem == 0)
+		if (consumerstruct->q->numElem == 0 && !csa->done)
 		{
 			pthread_cond_signal(&consumerstruct->spaceAvailable); // shout at producer
 			printf("CONSUMER thread '%s' waits for producer because of empty queue.\n", consumerstruct->category);
@@ -253,6 +261,7 @@ void *consumer(void *cs) {
 			printf("CONSUMER thread '%s' resuming order processing.\n", consumerstruct->category);
 		}
 		order = pop(consumerstruct->q);
+		printf("CONSUMER: Processing order for %s\n", order->bname);
 		index = binarySearch(cdb, order->id, 0, cdb->numCust - 1);
 		printf("index: %d\n", index);
 		if (index >= 0) {
@@ -263,15 +272,16 @@ void *consumer(void *cs) {
 			printf("Error: customer not found in CDUpdate.");
 			return 0;
 		}
-		printf("done with customer update\n");
+		//printf("done with customer update\n");
 		free(order->bname);
 		free(order->category);
 		free(order);
-		printf("done with free\n");
+		//printf("done with free\n");
 		pthread_cond_signal(&consumerstruct->spaceAvailable); // shout at producer
-		printf("done with signal\n");
+		//printf("done with signal\n");
 		pthread_mutex_unlock(&consumerstruct->mutex);
-		printf("done with unlock\n");
+		//printf("done with unlock\n");
+		PrintDB(cdb);
 	}
 	return NULL;
 }
