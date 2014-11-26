@@ -238,7 +238,7 @@ void *consumer(void *cs) {
 		QNode *order;
 		
 		pthread_mutex_lock(&consumerstruct->mutex);
-		while (consumerstruct[index].q->numElem == 0)
+		while (consumerstruct->q->numElem == 0)
 		{
 			pthread_cond_signal(&consumerstruct->spaceAvailable); // shout at producer
 			printf("Consumer thread '%s' waits for producer because of empty queue.\n", consumerstruct->category);
