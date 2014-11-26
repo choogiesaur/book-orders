@@ -132,7 +132,9 @@ int CDInsert(CDB cdb, Customer *cust) {
 	cdb->dbarray[cdb->numCust].slist = NULL;
 	cdb->dbarray[cdb->numCust].rlist = NULL;
 	cdb->numCust++;
-	free(cust);
+	printf("IN CUSTOMER.c\n\n");
+	printCustomer(&(cdb->dbarray[cdb->numCust - 1]));
+	//free(cust);
 	return 1;
 }
 
@@ -151,6 +153,7 @@ int CDUpdate(CDB cdb, QNode *order, int indx) {
 		rejected = (ROrder *)malloc(sizeof(ROrder));
 		bookname = (char *)malloc(sizeof(order->bname) + 1);
 		strcpy(bookname, order->bname);
+		bookname[strlen(bookname)] = '\0';
 		rejected->bname = bookname;
 		rejected->price = order->price;
 		rejected->next = NULL;
@@ -169,6 +172,7 @@ int CDUpdate(CDB cdb, QNode *order, int indx) {
 		accepted = (SOrder *)malloc(sizeof(SOrder));
 		bookname = (char *)malloc(sizeof(order->bname) + 1);
 		strcpy(bookname, order->bname);
+		bookname[strlen(bookname)] = '\0';
 		accepted->bname = bookname;
 		accepted->price = order->price;
 		accepted->updatedbalance = cdb->dbarray[index].balance - order->price;
@@ -232,7 +236,7 @@ void PrintDB(CDB cdb) {
 }
 
 void printCustomer(Customer *dude){
-	printf("---PRINTING CUSTOMER---\n");
+	printf("---PRINTING CUSTOMER %s---\n", dude->name);
 	printf("Customer Name: %s\n", dude->name);
 	printf("Customer ID: %ld\n", dude->id);
 	printf("Customer Balance: %f\n", dude->balance);
