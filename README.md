@@ -1,7 +1,7 @@
 book-orders
 ===========
 
-super secret project with omar
+super secret project with omar. Book order simulation as a demo of multi-threaded programming in C.
 
 *Note: when running, you may adjust the buffer size for the orders at the top of queue.h
 
